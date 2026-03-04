@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goldy Brown — Custom Leather Holster Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#080706;--s1:#0f0d0b;--s2:#161210;--s3:#1e1914;--border:#2c2420;--border2:#3a3028;--gold:#c8a84a;--gold2:#e6c96c;--gold3:#f5dfa0;--cream:#ede4d6;--dim:#8a7a68;--text:#d8cec0;--rush:#b83228;--rush2:#e04030;--green:#2a6644}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 15% 0%,rgba(200,168,74,.06) 0%,transparent 55%),radial-gradient(ellipse 60% 80% at 85% 100%,rgba(200,168,74,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:52px 20px 80px}
+.hdr{text-align:center;margin-bottom:56px;animation:fadeUp .8s ease both}
+.hdr-eyebrow{display:inline-flex;align-items:center;gap:12px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;margin-bottom:20px}
+.hdr-eyebrow::before,.hdr-eyebrow::after{content:'';width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.hdr-eyebrow::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.hdr h1{font-family:'Playfair Display',serif;font-size:clamp(44px,8vw,88px);color:var(--cream);line-height:.92;margin-bottom:16px;font-weight:900}
+.hdr h1 i{color:var(--gold);font-style:italic;display:block}
+.hdr-sub{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+.main{display:grid;grid-template-columns:1fr 440px;gap:24px;align-items:start}
+@media(max-width:900px){.main{grid-template-columns:1fr}.preview-col{position:static!important}}
+.preview-col{position:sticky;top:16px;animation:fadeLeft .8s ease .1s both}
+.preview-card{background:var(--s1);border:1px solid var(--border);border-radius:2px;overflow:hidden;box-shadow:0 32px 64px rgba(0,0,0,.6),0 4px 12px rgba(0,0,0,.4)}
+.prev-topbar{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.prev-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim)}
+.prev-live{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--green)}
+.prev-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.stage{position:relative;min-height:500px;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse 70% 60% at 50% 45%,#1a1510 0%,#060504 100%),repeating-linear-gradient(-45deg,transparent,transparent 36px,rgba(255,255,255,.007) 36px,rgba(255,255,255,.007) 37px);overflow:hidden;padding:32px 16px}
+.stage::before,.stage::after{content:'';position:absolute;width:22px;height:22px;border-color:rgba(200,168,74,.18);border-style:solid}
+.stage::before{top:12px;left:12px;border-width:1px 0 0 1px}
+.stage::after{bottom:12px;right:12px;border-width:0 1px 1px 0}
+.rig-wrap{position:relative;transition:transform .5s cubic-bezier(.34,1.2,.64,1),filter .5s ease;filter:drop-shadow(0 28px 56px rgba(0,0,0,.95)) drop-shadow(0 6px 16px rgba(0,0,0,.7))}
+.rig-wrap:hover{transform:translateY(-6px) rotate(.5deg)}
+.rig-wrap.pop{animation:popAnim .4s cubic-bezier(.34,1.4,.64,1)}
+@keyframes popAnim{0%{transform:scale(.95);opacity:.5}60%{transform:scale(1.02)}100%{transform:scale(1);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeLeft{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeRight{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.specs-bar{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--border)}
+.spec-cell{padding:14px 12px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:4px}
+.spec-cell:last-child{border-right:none}
+.spec-k{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.spec-v{font-family:'Playfair Display',serif;font-size:13px;color:var(--gold2);font-weight:600}
+.cfg-col{display:flex;flex-direction:column;gap:6px;animation:fadeRight .8s ease .15s both}
+.block{background:var(--s1);border:1px solid var(--border);border-radius:2px;overflow:hidden;transition:border-color .2s}
+.block:hover{border-color:var(--border2)}
+.block-hdr{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.bh-left{display:flex;align-items:center;gap:10px}
+.bh-num{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--gold);opacity:.5;letter-spacing:.06em}
+.bh-name{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--cream);font-weight:500}
+.bh-val{font-family:'Playfair Display',serif;font-size:13px;color:var(--gold);font-style:italic}
+.block-body{padding:18px}
+.shape-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.shape-card{background:var(--s2);border:1px solid var(--border);border-radius:2px;padding:14px 10px;cursor:pointer;transition:all .2s;text-align:center;position:relative;overflow:hidden;color:var(--dim)}
+.shape-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,168,74,.08),transparent);opacity:0;transition:opacity .2s}
+.shape-card:hover{border-color:rgba(200,168,74,.5);color:var(--text)}
+.shape-card:hover::after{opacity:1}
+.shape-card.on{border-color:var(--gold);background:#1c1810;color:var(--cream)}
+.shape-card.on::after{opacity:1}
+.sc-check{position:absolute;top:6px;right:8px;font-size:9px;color:var(--gold);opacity:0;transition:opacity .2s}
+.shape-card.on .sc-check{opacity:1}
+.sc-icon{margin-bottom:8px;display:block}
+.sc-name{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:3px;position:relative;z-index:1}
+.sc-desc{font-size:9px;color:var(--dim);line-height:1.4;position:relative;z-index:1}
+.swatch-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.sw{border:2px solid transparent;border-radius:2px;cursor:pointer;transition:all .2s;aspect-ratio:1;position:relative;overflow:hidden}
+.sw:hover{border-color:rgba(200,168,74,.6);transform:scale(1.05)}
+.sw.on{border-color:var(--gold);box-shadow:0 0 0 1px rgba(200,168,74,.3)}
+.sw.on::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold;color:rgba(255,255,255,.9);background:rgba(0,0,0,.3);z-index:2;text-shadow:0 2px 6px rgba(0,0,0,1)}
+.sw-inner{width:100%;height:100%;min-height:58px;position:relative}
+.sw-tex{position:absolute;inset:0;z-index:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.18'/%3E%3C/svg%3E");mix-blend-mode:overlay}
+.sw-shine{position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent);z-index:2}
+.sw-label{position:absolute;bottom:0;left:0;right:0;padding:4px 5px;background:rgba(0,0,0,.65);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.85);text-align:center;z-index:3}
+.hw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.hw-card{background:var(--s2);border:1px solid var(--border);border-radius:2px;padding:13px 8px;cursor:pointer;text-align:center;transition:all .2s;position:relative}
+.hw-card:hover{border-color:rgba(200,168,74,.5)}
+.hw-card.on{border-color:var(--gold);background:#1c1810}
+.hw-pip{position:absolute;top:7px;right:7px;width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:0;transition:opacity .2s}
+.hw-card.on .hw-pip{opacity:1}
+.hw-orb{width:36px;height:36px;border-radius:50%;margin:0 auto 10px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.07)}
+.orb-shine{position:absolute;top:5px;left:8px;width:11px;height:8px;background:rgba(255,255,255,.32);border-radius:50%;transform:rotate(-25deg)}
+.hw-n{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--cream)}
+.rivet-row{display:flex;gap:8px}
+.rivet-pill{flex:1;padding:10px 12px;background:var(--s2);border:1px solid var(--border);border-radius:2px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .2s;position:relative;overflow:hidden}
+.rivet-pill:hover{border-color:rgba(200,168,74,.5)}
+.rivet-pill.on{border-color:var(--gold);background:#1c1810}
+.rivet-orb{width:20px;height:20px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.12);position:relative;overflow:hidden}
+.rivet-orb::after{content:'';position:absolute;top:3px;left:5px;width:7px;height:5px;background:rgba(255,255,255,.28);border-radius:50%;transform:rotate(-20deg)}
+.rivet-name{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--cream)}
+.rivet-check{position:absolute;right:10px;font-size:10px;color:var(--gold);opacity:0;transition:opacity .2s}
+.rivet-pill.on .rivet-check{opacity:1}
+.stitch-row{display:flex;flex-wrap:wrap;gap:7px}
+.st{padding:7px 13px;border:1px solid var(--border);border-radius:1px;cursor:pointer;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;transition:all .2s;display:flex;align-items:center;gap:7px;background:var(--s2);color:var(--dim)}
+.st:hover{border-color:rgba(200,168,74,.5);color:var(--text)}
+.st.on{border-color:var(--gold);color:var(--gold);background:#1c1810}
+.st-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.12)}
+.toggle-rows{display:flex;flex-direction:column;gap:6px}
+.tog-row{background:var(--s2);border:1px solid var(--border);border-radius:2px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .2s;user-select:none;gap:12px}
+.tog-row:hover{border-color:var(--border2)}
+.tog-row.on{border-color:rgba(200,168,74,.4);background:#191510}
+.tog-info{flex:1}
+.tog-name{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--cream);margin-bottom:3px}
+.tog-desc{font-size:10px;color:var(--dim);line-height:1.4}
+.tog-price{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold2);letter-spacing:.04em;flex-shrink:0}
+.switch{position:relative;width:40px;height:22px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.sw-track{position:absolute;inset:0;background:#252018;border-radius:11px;cursor:pointer;transition:background .3s;border:1px solid var(--border)}
+.sw-track::after{content:'';position:absolute;left:3px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:var(--dim);transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+input:checked+.sw-track{background:var(--gold);border-color:var(--gold)}
+input:checked+.sw-track::after{left:calc(100% - 17px);background:#fff}
+.rush-wrap{background:var(--s1);border:1px solid var(--border);border-radius:2px;overflow:hidden;transition:all .3s}
+.rush-wrap.on{border-color:rgba(184,50,40,.5);background:#120c0b}
+.rush-hdr{padding:16px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none}
+.rush-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#fff;background:var(--rush);padding:3px 8px;border-radius:1px;flex-shrink:0}
+.rush-info{flex:1}
+.rush-name{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--cream);margin-bottom:3px}
+.rush-sub{font-size:10px;color:var(--dim)}
+.rush-plus{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--rush2);flex-shrink:0}
+.rush-expand{padding:0 18px;max-height:0;overflow:hidden;transition:max-height .35s ease,padding .3s ease}
+.rush-wrap.on .rush-expand{max-height:100px;padding-bottom:16px}
+.rush-items{border-top:1px solid rgba(184,50,40,.2);padding-top:12px;display:flex;flex-direction:column;gap:5px}
+.rush-item{font-size:10px;color:#c07068;display:flex;align-items:center;gap:8px}
+.rush-item::before{content:'→';color:var(--rush);font-weight:bold}
+.ta{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:2px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;resize:vertical;min-height:72px;outline:none;transition:border-color .2s;line-height:1.5}
+.ta:focus{border-color:rgba(200,168,74,.4)}
+.ta::placeholder{color:var(--dim)}
+.cta{background:linear-gradient(140deg,#161208,#1c1610);border:1px solid #3a2e18;border-radius:2px;padding:22px 20px}
+.price-area{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px;gap:12px}
+.price-lbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim);margin-bottom:2px}
+.price-big{font-family:'Bebas Neue',sans-serif;font-size:54px;color:var(--gold2);letter-spacing:.02em;line-height:1;transition:all .3s}
+.price-right{text-align:right}
+.price-line{font-family:'DM Mono',monospace;font-size:10px;color:var(--dim);margin-bottom:2px}
+.price-line.rush-l{color:var(--rush2);opacity:0;transition:opacity .3s}
+.price-line.rush-l.show{opacity:1}
+.btn-main{width:100%;padding:16px;background:var(--gold);color:#080706;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.3em;border:none;border-radius:1px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;margin-bottom:8px}
+.btn-main::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);opacity:0;transition:opacity .25s}
+.btn-main:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 8px 30px rgba(200,168,74,.4)}
+.btn-main:hover::after{opacity:1}
+.btn-ghost{width:100%;padding:11px;background:transparent;color:var(--dim);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--border);border-radius:1px;cursor:pointer;transition:all .2s}
+.btn-ghost:hover{border-color:var(--dim);color:var(--text)}
+.trust{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.trust-i{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:5px}
+.trust-i::before{content:'✦';color:var(--gold);font-size:9px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(8px)}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--s1);border:1px solid var(--border);border-radius:2px;padding:36px;max-width:480px;width:92%;transform:translateY(14px) scale(.98);transition:transform .3s}
+.overlay.open .modal{transform:none}
+.modal-title{font-family:'Playfair Display',serif;font-size:28px;color:var(--cream);font-weight:700;margin-bottom:4px}
+.modal-sub{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:22px}
+.m-rush-notice{background:rgba(184,50,40,.1);border:1px solid rgba(184,50,40,.3);border-radius:1px;padding:9px 13px;margin-bottom:14px;font-size:10px;color:#d06858;letter-spacing:.06em;display:none}
+.m-rush-notice.show{display:block}
+.m-row{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border);gap:12px}
+.m-row:last-child{border-bottom:none}
+.m-k{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.m-v{font-family:'Playfair Display',serif;font-size:14px;color:var(--cream);text-align:right}
+.m-v.hl{color:var(--gold2);font-weight:700;font-size:18px}
+.m-v.rush{color:var(--rush2)}
+.m-btns{display:flex;gap:9px;margin-top:22px}
+.m-yes{flex:1;padding:13px;background:var(--gold);color:#080706;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.22em;border:none;border-radius:1px;cursor:pointer;transition:background .2s}
+.m-yes:hover{background:var(--gold2)}
+.m-no{padding:13px 16px;background:transparent;color:var(--dim);border:1px solid var(--border);border-radius:1px;cursor:pointer;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;transition:all .2s}
+.m-no:hover{border-color:var(--dim);color:var(--text)}
+.footer{text-align:center;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);opacity:.35;margin-top:48px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hdr">
+  <div class="hdr-eyebrow">Goldy Brown</div>
+  <h1>Design Your<i>Leather Holster.</i></h1>
+  <div class="hdr-sub">Double Shoulder · Handmade to Order · Full-Grain Leather</div>
+</div>
+<div class="main">
+  <div class="preview-col">
+    <div class="preview-card">
+      <div class="prev-topbar">
+        <span class="prev-title">Live Preview</span>
+        <span class="prev-live">Live</span>
+      </div>
+      <div class="stage">
+        <div class="rig-wrap" id="rig-wrap">
+<svg id="rig-svg" viewBox="0 0 300 430" xmlns="http://www.w3.org/2000/svg" width="300" height="430">
+<defs>
+<pattern id="ltex" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+<path d="M0 4 Q2 2 4 4 Q6 6 8 4" fill="none" stroke="rgba(0,0,0,0.07)" stroke-width="0.4"/>
+<path d="M0 8 Q2 6 4 8" fill="none" stroke="rgba(0,0,0,0.07)" stroke-width="0.4"/>
+</pattern>
+<linearGradient id="hl-l" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="rgba(255,255,255,0.09)"/><stop offset="60%" stop-color="rgba(255,255,255,0)"/>
+</linearGradient>
+<linearGradient id="hl-r" x1="100%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" stop-color="rgba(255,255,255,0.07)"/><stop offset="60%" stop-color="rgba(255,255,255,0)"/>
+</linearGradient>
+<radialGradient id="shad" cx="50%" cy="95%" r="45%">
+<stop offset="0%" stop-color="rgba(0,0,0,0.55)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+</radialGradient>
+</defs>
+<!-- ground shadow -->
+<ellipse cx="150" cy="422" rx="115" ry="9" fill="url(#shad)"/>
+<!-- STRAPS -->
+<path d="M96 2 L82 2 L60 38 L52 96 L64 96 L68 40 L98 6Z" id="sl1" fill="#1a1a1a" stroke="rgba(0,0,0,.3)" stroke-width=".5"/>
+<path d="M96 2 L88 2 L68 38 L60 96 L64 96 L72 40 L98 4Z" id="sl2" fill="#232323"/>
+<path d="M87 3 L66 39 L57 96" fill="none" stroke="rgba(200,168,74,.3)" stroke-width=".8" stroke-dasharray="3,2.5" id="sl-stitch"/>
+<path d="M204 2 L218 2 L240 38 L248 96 L236 96 L232 40 L202 6Z" id="sr1" fill="#1a1a1a" stroke="rgba(0,0,0,.3)" stroke-width=".5"/>
+<path d="M204 2 L212 2 L232 38 L240 96 L236 96 L228 40 L202 4Z" id="sr2" fill="#232323"/>
+<path d="M213 3 L234 39 L243 96" fill="none" stroke="rgba(200,168,74,.3)" stroke-width=".8" stroke-dasharray="3,2.5" id="sr-stitch"/>
+<path d="M98 5 Q150 0 202 5 L200 15 Q150 9 100 15Z" id="strap-top" fill="#1c1c1c"/>
+<!-- EYELETS -->
+<circle cx="56" cy="56" r="6.5" fill="#111" id="el1"/><circle cx="56" cy="56" r="3.5" fill="none" stroke-width="2" id="el1r"/>
+<circle cx="54" cy="76" r="6.5" fill="#111" id="el2"/><circle cx="54" cy="76" r="3.5" fill="none" stroke-width="2" id="el2r"/>
+<circle cx="244" cy="56" r="6.5" fill="#111" id="er1"/><circle cx="244" cy="56" r="3.5" fill="none" stroke-width="2" id="er1r"/>
+<circle cx="246" cy="76" r="6.5" fill="#111" id="er2"/><circle cx="246" cy="76" r="3.5" fill="none" stroke-width="2" id="er2r"/>
+<!-- BUCKLES -->
+<rect x="46" y="94" width="22" height="13" rx="3.5" fill="none" stroke-width="3.5" id="buckle-l"/>
+<line x1="57" y1="94" x2="57" y2="107" stroke-width="2.2" id="buckle-lp"/>
+<rect x="232" y="94" width="22" height="13" rx="3.5" fill="none" stroke-width="3.5" id="buckle-r"/>
+<line x1="243" y1="94" x2="243" y2="107" stroke-width="2.2" id="buckle-rp"/>
+<!-- CONNECTOR -->
+<rect x="52" y="107" width="196" height="13" rx="3.5" id="con-strap" fill="#1c1c1c"/>
+<rect x="132" y="109" width="36" height="9" rx="2" fill="#252525"/>
+<!-- CLIPS -->
+<path d="M55 107 Q44 107 43 114 Q43 123 57 123 Q62 123 65 120" fill="none" stroke-width="3.5" stroke-linecap="round" id="clip-l"/>
+<circle cx="65" cy="114" r="4.5" fill="none" stroke-width="2.8" id="clip-lr"/>
+<path d="M245 107 Q256 107 257 114 Q257 123 243 123 Q238 123 235 120" fill="none" stroke-width="3.5" stroke-linecap="round" id="clip-r"/>
+<circle cx="235" cy="114" r="4.5" fill="none" stroke-width="2.8" id="clip-rr"/>
+<!-- LEFT BAG -->
+<path d="M14 124 Q10 120 9 126 L7 272 Q6 294 17 306 Q31 322 64 324 Q86 325 99 311 Q108 298 109 278 L109 126 Q109 117 100 116 L14 116Z" id="lb-body" fill="#1a1a1a" stroke="rgba(0,0,0,.5)" stroke-width="1.5"/>
+<path d="M14 124 Q10 120 9 126 L7 272 Q6 294 17 306 Q31 322 64 324 Q86 325 99 311 Q108 298 109 278 L109 126 Q109 117 100 116 L14 116Z" fill="url(#ltex)" opacity=".45"/>
+<path d="M16 126 Q12 122 12 128 L10 210 L34 210 L34 122Z" fill="url(#hl-l)"/>
+<!-- left side zipper -->
+<path d="M107 132 L109 132 M107 140 L109 140 M107 148 L109 148 M107 156 L109 156 M107 164 L109 164 M107 172 L109 172 M107 180 L109 180 M107 188 L109 188 M107 196 L109 196 M107 204 L109 204 M107 212 L109 212 M107 220 L109 220 M107 228 L109 228 M107 236 L109 236 M107 244 L109 244 M107 252 L109 252 M107 260 L109 260 M107 268 L109 268" fill="none" stroke-width="2.6" stroke-linecap="round" id="lz-teeth"/>
+<circle cx="108" cy="198" r="7.5" id="lz-ring" fill="#b8960c"/>
+<rect x="105" y="204" width="8" height="14" rx="3" id="lz-body" fill="#9a7a0a"/>
+<!-- left front pocket -->
+<path d="M20 202 Q17 199 17 204 L18 266 Q18 276 27 280 Q39 286 72 285 Q86 284 90 274 L91 204 Q91 199 88 199Z" id="lb-pkt" fill="#111" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
+<path d="M20 202 Q17 199 17 204 L18 266 Q18 276 27 280 Q39 286 72 285 Q86 284 90 274 L91 204 Q91 199 88 199Z" fill="url(#ltex)" opacity=".3"/>
+<path d="M20 204 Q18 201 25 200 L87 200 Q91 201 91 204 L90 273 Q89 281 72 283 L28 283 Q20 281 19 273Z" fill="none" stroke-width="1.1" stroke-dasharray="3.5,2.5" id="lb-pkt-stitch"/>
+<!-- left snap -->
+<circle cx="55" cy="198" r="8" id="lb-snap1" fill="#b8960c"/>
+<circle cx="55" cy="198" r="5" id="lb-snap2" fill="#c9a030"/>
+<circle cx="53" cy="196" r="1.8" fill="rgba(255,255,255,.32)"/>
+<!-- left rivets -->
+<circle cx="20" cy="124" r="5" id="lb-riv1" fill="#b8960c"/><circle cx="19" cy="122" r="1.5" fill="rgba(255,255,255,.38)"/>
+<circle cx="101" cy="124" r="5" id="lb-riv2" fill="#b8960c"/><circle cx="100" cy="122" r="1.5" fill="rgba(255,255,255,.38)"/>
+<circle cx="18" cy="314" r="5" id="lb-riv3" fill="#b8960c"/><circle cx="17" cy="312" r="1.5" fill="rgba(255,255,255,.38)"/>
+<circle cx="98" cy="306" r="5" id="lb-riv4" fill="#b8960c"/><circle cx="97" cy="304" r="1.5" fill="rgba(255,255,255,.38)"/>
+<!-- left shield badge -->
+<path d="M50 122 L70 122 Q76 122 76 129 L76 143 Q76 155 60 160 Q44 155 44 143 L44 129 Q44 122 50 122Z" id="lb-badge" fill="#181818" stroke-width="1.8"/>
+<path d="M53 126 L67 126 Q71 126 71 132 L71 141 Q71 150 61 154 Q51 150 51 141 L51 132Z" fill="rgba(200,168,74,.09)"/>
+<path d="M61 127 L61 153" stroke-width=".6" opacity=".25" id="lb-bl"/>
+<path d="M54 136 Q61 133 68 136" fill="none" stroke-width=".7" opacity=".25"/>
+<!-- left back zip (hidden) -->
+<g id="lb-bkzip" opacity="0">
+<path d="M8 138 L6 138 M8 146 L6 146 M8 154 L6 154 M8 162 L6 162 M8 170 L6 170 M8 178 L6 178 M8 186 L6 186 M8 194 L6 194 M8 202 L6 202 M8 210 L6 210 M8 218 L6 218 M8 226 L6 226 M8 234 L6 234 M8 242 L6 242 M8 250 L6 250 M8 258 L6 258" fill="none" stroke-width="2.4" stroke-linecap="round" id="lbz-teeth"/>
+<circle cx="7" cy="196" r="6" id="lbz-ring" fill="#b8960c"/>
+<rect x="4" y="201" width="7" height="12" rx="2.5" id="lbz-body" fill="#9a7a0a"/>
+</g>
+<!-- left outline stitch -->
+<path d="M16 128 Q12 124 11 130 L9 274 Q8 296 19 308 Q33 324 64 326 Q88 327 101 313 Q110 300 111 280 L111 130 Q111 120 102 118 L16 118" fill="none" stroke-width="1.3" stroke-dasharray="4,3" id="lb-o-stitch"/>
+<!-- RIGHT BAG -->
+<path d="M286 124 Q290 120 291 126 L293 272 Q294 294 283 306 Q269 322 236 324 Q214 325 201 311 Q192 298 191 278 L191 126 Q191 117 200 116 L286 116Z" id="rb-body" fill="#1a1a1a" stroke="rgba(0,0,0,.5)" stroke-width="1.5"/>
+<path d="M286 124 Q290 120 291 126 L293 272 Q294 294 283 306 Q269 322 236 324 Q214 325 201 311 Q192 298 191 278 L191 126 Q191 117 200 116 L286 116Z" fill="url(#ltex)" opacity=".45"/>
+<path d="M284 126 Q288 122 288 128 L290 210 L266 210 L266 122Z" fill="url(#hl-r)"/>
+<!-- right side zipper -->
+<path d="M193 132 L191 132 M193 140 L191 140 M193 148 L191 148 M193 156 L191 156 M193 164 L191 164 M193 172 L191 172 M193 180 L191 180 M193 188 L191 188 M193 196 L191 196 M193 204 L191 204 M193 212 L191 212 M193 220 L191 220 M193 228 L191 228 M193 236 L191 236 M193 244 L191 244 M193 252 L191 252 M193 260 L191 260 M193 268 L191 268" fill="none" stroke-width="2.6" stroke-linecap="round" id="rz-teeth"/>
+<circle cx="192" cy="198" r="7.5" id="rz-ring" fill="#b8960c"/>
+<rect x="188" y="204" width="8" height="14" rx="3" id="rz-body" fill="#9a7a0a"/>
+<!-- right front pocket -->
+<path d="M280 202 Q283 199 283 204 L282 266 Q282 276 273 280 Q261 286 228 285 Q214 284 210 274 L209 204 Q209 199 212 199Z" id="rb-pkt" fill="#111" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
+<path d="M280 202 Q283 199 283 204 L282 266 Q282 276 273 280 Q261 286 228 285 Q214 284 210 274 L209 204 Q209 199 212 199Z" fill="url(#ltex)" opacity=".3"/>
+<path d="M280 204 Q282 201 275 200 L213 200 Q209 201 209 204 L210 273 Q211 281 228 283 L272 283 Q280 281 281 273Z" fill="none" stroke-width="1.1" stroke-dasharray="3.5,2.5" id="rb-pkt-stitch"/>
+<circle cx="245" cy="198" r="8" id="rb-snap1" fill="#b8960c"/>
+<circle cx="245" cy="198" r="5" id="rb-snap2" fill="#c9a030"/>
+<circle cx="243" cy="196" r="1.8" fill="rgba(255,255,255,.32)"/>
+<!-- right rivets -->
+<circle cx="199" cy="124" r="5" id="rb-riv1" fill="#b8960c"/><circle cx="198" cy="122" r="1.5" fill="rgba(255,255,255,.38)"/>
+<circle cx="280" cy="124" r="5" id="rb-riv2" fill="#b8960c"/><circle cx="279" cy="122" r="1.5" fill="rgba(255,255,255,.38)"/>
+<circle cx="202" cy="314" r="5" id="rb-riv3" fill="#b8960c"/><circle cx="201" cy="312" r="1.5" fill="rgba(255,255,255,.38)"/>
+<circle cx="278" cy="306" r="5" id="rb-riv4" fill="#b8960c"/><circle cx="277" cy="304" r="1.5" fill="rgba(255,255,255,.38)"/>
+<!-- right shield badge -->
+<path d="M230 122 L250 122 Q256 122 256 129 L256 143 Q256 155 240 160 Q224 155 224 143 L224 129 Q224 122 230 122Z" id="rb-badge" fill="#181818" stroke-width="1.8"/>
+<path d="M233 126 L247 126 Q251 126 251 132 L251 141 Q251 150 241 154 Q231 150 231 141 L231 132Z" fill="rgba(200,168,74,.09)"/>
+<path d="M241 127 L241 153" stroke-width=".6" opacity=".25"/>
+<path d="M234 136 Q241 133 248 136" fill="none" stroke-width=".7" opacity=".25"/>
+<!-- right back zip (hidden) -->
+<g id="rb-bkzip" opacity="0">
+<path d="M292 138 L294 138 M292 146 L294 146 M292 154 L294 154 M292 162 L294 162 M292 170 L294 170 M292 178 L294 178 M292 186 L294 186 M292 194 L294 194 M292 202 L294 202 M292 210 L294 210 M292 218 L294 218 M292 226 L294 226 M292 234 L294 234 M292 242 L294 242 M292 250 L294 250 M292 258 L294 258" fill="none" stroke-width="2.4" stroke-linecap="round" id="rbz-teeth"/>
+<circle cx="293" cy="196" r="6" id="rbz-ring" fill="#b8960c"/>
+<rect x="290" y="201" width="7" height="12" rx="2.5" id="rbz-body" fill="#9a7a0a"/>
+</g>
+<path d="M284 128 Q288 124 289 130 L291 274 Q292 296 281 308 Q267 324 236 326 Q212 327 199 313 Q190 300 189 280 L189 130 Q189 120 198 118 L284 118" fill="none" stroke-width="1.3" stroke-dasharray="4,3" id="rb-o-stitch"/>
+</svg>
+        </div>
+      </div>
+      <div class="specs-bar">
+        <div class="spec-cell"><span class="spec-k">Shape</span><span class="spec-v" id="sv-shape">Classic</span></div>
+        <div class="spec-cell"><span class="spec-k">Leather</span><span class="spec-v" id="sv-leather">Black</span></div>
+        <div class="spec-cell"><span class="spec-k">Hardware</span><span class="spec-v" id="sv-hw">Brass</span></div>
+        <div class="spec-cell"><span class="spec-k">Rivet</span><span class="spec-v" id="sv-rivet">Brass</span></div>
+        <div class="spec-cell"><span class="spec-k">Add-ons</span><span class="spec-v" id="sv-addons">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cfg-col">
+    <!-- 01 Shape -->
+    <div class="block">
+      <div class="block-hdr"><div class="bh-left"><span class="bh-num">01</span><span class="bh-name">Bag Shape</span></div><span class="bh-val" id="cur-shape">Classic Slab</span></div>
+      <div class="block-body">
+        <div class="shape-grid">
+          <div class="shape-card on" data-shape="Classic" onclick="pickShape(this)"><span class="sc-check">✓</span>
+            <span class="sc-icon"><svg width="52" height="40" viewBox="0 0 52 40"><rect x="4" y="2" width="44" height="36" rx="4" fill="currentColor" opacity=".15" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="14" width="34" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/><circle cx="26" cy="10" r="3" fill="currentColor" opacity=".6"/></svg></span>
+            <div class="sc-name">Classic Slab</div><div class="sc-desc">Rectangle, front pocket + zipper</div></div>
+          <div class="shape-card" data-shape="Tapered" onclick="pickShape(this)"><span class="sc-check">✓</span>
+            <span class="sc-icon"><svg width="52" height="40" viewBox="0 0 52 40"><path d="M8 4 L44 4 Q48 4 47 8 L44 34 Q44 38 40 38 L12 38 Q8 38 8 34 L5 8 Q4 4 8 4Z" fill="currentColor" opacity=".15" stroke="currentColor" stroke-width="1.5"/><path d="M13 18 L39 18 L36 32 L16 32Z" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/></svg></span>
+            <div class="sc-name">Tapered</div><div class="sc-desc">Wider top, narrows to a point</div></div>
+          <div class="shape-card" data-shape="Boxy" onclick="pickShape(this)"><span class="sc-check">✓</span>
+            <span class="sc-icon"><svg width="52" height="40" viewBox="0 0 52 40"><rect x="4" y="4" width="44" height="32" rx="2" fill="currentColor" opacity=".15" stroke="currentColor" stroke-width="1.5"/><rect x="8" y="10" width="16" height="18" rx="1" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/><rect x="28" y="14" width="14" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/></svg></span>
+            <div class="sc-name">Boxy Dual</div><div class="sc-desc">Square, dual pocket layout</div></div>
+          <div class="shape-card" data-shape="Cargo" onclick="pickShape(this)"><span class="sc-check">✓</span>
+            <span class="sc-icon"><svg width="52" height="40" viewBox="0 0 52 40"><rect x="4" y="2" width="44" height="36" rx="3" fill="currentColor" opacity=".15" stroke="currentColor" stroke-width="1.5"/><rect x="8" y="6" width="36" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/><rect x="8" y="22" width="36" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/></svg></span>
+            <div class="sc-name">Cargo Stack</div><div class="sc-desc">Two stacked pockets</div></div>
+          <div class="shape-card" data-shape="Slim" onclick="pickShape(this)"><span class="sc-check">✓</span>
+            <span class="sc-icon"><svg width="52" height="40" viewBox="0 0 52 40"><rect x="16" y="2" width="20" height="36" rx="4" fill="currentColor" opacity=".15" stroke="currentColor" stroke-width="1.5"/><rect x="19" y="16" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/><circle cx="26" cy="10" r="2.5" fill="currentColor" opacity=".6"/></svg></span>
+            <div class="sc-name">Slim</div><div class="sc-desc">Narrow, minimal, concealed</div></div>
+          <div class="shape-card" data-shape="Oversized" onclick="pickShape(this)"><span class="sc-check">✓</span>
+            <span class="sc-icon"><svg width="52" height="40" viewBox="0 0 52 40"><rect x="2" y="2" width="48" height="36" rx="3" fill="currentColor" opacity=".15" stroke="currentColor" stroke-width="1.5"/><rect x="6" y="6" width="18" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/><rect x="28" y="6" width="18" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/><rect x="28" y="20" width="18" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/></svg></span>
+            <div class="sc-name">Oversized</div><div class="sc-desc">Large main + side card pocket</div></div>
+        </div>
+      </div>
+    </div>
+    <!-- 02 Leather -->
+    <div class="block">
+      <div class="block-hdr"><div class="bh-left"><span class="bh-num">02</span><span class="bh-name">Leather Color</span></div><span class="bh-val" id="cur-leather">Black</span></div>
+      <div class="block-body">
+        <div class="swatch-row">
+          <div class="sw on" data-color="Black" data-hex="#1a1a1a" data-dk="#0d0d0d" onclick="pickLeather(this)"><div class="sw-inner" style="background:#1a1a1a"><div class="sw-tex"></div><div class="sw-shine"></div><div class="sw-label">Black</div></div></div>
+          <div class="sw" data-color="Brown" data-hex="#5c3d1e" data-dk="#3a2510" onclick="pickLeather(this)"><div class="sw-inner" style="background:#5c3d1e"><div class="sw-tex"></div><div class="sw-shine"></div><div class="sw-label">Brown</div></div></div>
+          <div class="sw" data-color="White" data-hex="#d0c8bc" data-dk="#b0a898" onclick="pickLeather(this)"><div class="sw-inner" style="background:#d0c8bc"><div class="sw-tex"></div><div class="sw-shine"></div><div class="sw-label">White</div></div></div>
+          <div class="sw" data-color="Green" data-hex="#2d4a2d" data-dk="#1c301c" onclick="pickLeather(this)"><div class="sw-inner" style="background:#2d4a2d"><div class="sw-tex"></div><div class="sw-shine"></div><div class="sw-label">Green</div></div></div>
+        </div>
+      </div>
+    </div>
+    <!-- 03 Hardware -->
+    <div class="block">
+      <div class="block-hdr"><div class="bh-left"><span class="bh-num">03</span><span class="bh-name">Hardware Finish</span></div><span class="bh-val" id="cur-hw">Brass</span></div>
+      <div class="block-body">
+        <div class="hw-grid">
+          <div class="hw-card on" data-hw="Brass" data-hwc="#b8960c" onclick="pickHW(this)"><div class="hw-pip"></div><div class="hw-orb" style="background:radial-gradient(circle at 38% 32%,#e8c840,#b8960c,#8b700a)"><div class="orb-shine"></div></div><div class="hw-n">Brass</div></div>
+          <div class="hw-card" data-hw="Silver" data-hwc="#a8a8a8" onclick="pickHW(this)"><div class="hw-pip"></div><div class="hw-orb" style="background:radial-gradient(circle at 38% 32%,#e8e8e8,#a8a8a8,#787878)"><div class="orb-shine"></div></div><div class="hw-n">Silver</div></div>
+          <div class="hw-card" data-hw="Matte Black" data-hwc="#333" onclick="pickHW(this)"><div class="hw-pip"></div><div class="hw-orb" style="background:radial-gradient(circle at 38% 32%,#555,#333,#111)"><div class="orb-shine"></div></div><div class="hw-n">Matte Blk</div></div>
+          <div class="hw-card" data-hw="Gold" data-hwc="#c9a84c" onclick="pickHW(this)"><div class="hw-pip"></div><div class="hw-orb" style="background:radial-gradient(circle at 38% 32%,#f0d060,#c9a84c,#9a7a20)"><div class="orb-shine"></div></div><div class="hw-n">Gold</div></div>
+          <div class="hw-card" data-hw="Antique" data-hwc="#8b7355" onclick="pickHW(this)"><div class="hw-pip"></div><div class="hw-orb" style="background:radial-gradient(circle at 38% 32%,#b09060,#8b7355,#5a4a35)"><div class="orb-shine"></div></div><div class="hw-n">Antique</div></div>
+          <div class="hw-card" data-hw="Gunmetal" data-hwc="#4a4a5a" onclick="pickHW(this)"><div class="hw-pip"></div><div class="hw-orb" style="background:radial-gradient(circle at 38% 32%,#6a6a7a,#4a4a5a,#2a2a3a)"><div class="orb-shine"></div></div><div class="hw-n">Gunmetal</div></div>
+        </div>
+      </div>
+    </div>
+    <!-- 04 Rivets -->
+    <div class="block">
+      <div class="block-hdr"><div class="bh-left"><span class="bh-num">04</span><span class="bh-name">Rivet Color</span></div><span class="bh-val" id="cur-rivet">Brass</span></div>
+      <div class="block-body">
+        <div class="rivet-row">
+          <div class="rivet-pill on" data-rivet="Brass" data-rc="#b8960c" data-rc2="#c9a030" onclick="pickRivet(this)"><div class="rivet-orb" style="background:radial-gradient(circle at 38% 32%,#e8c840,#b8960c,#8b700a)"></div><span class="rivet-name">Brass</span><span class="rivet-check">✓</span></div>
+          <div class="rivet-pill" data-rivet="Silver" data-rc="#909090" data-rc2="#b0b0b0" onclick="pickRivet(this)"><div class="rivet-orb" style="background:radial-gradient(circle at 38% 32%,#e0e0e0,#909090,#606060)"></div><span class="rivet-name">Silver</span><span class="rivet-check">✓</span></div>
+          <div class="rivet-pill" data-rivet="Black" data-rc="#1a1a1a" data-rc2="#333" onclick="pickRivet(this)"><div class="rivet-orb" style="background:radial-gradient(circle at 38% 32%,#555,#1a1a1a,#000)"></div><span class="rivet-name">Black</span><span class="rivet-check">✓</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- 05 Stitching -->
+    <div class="block">
+      <div class="block-hdr"><div class="bh-left"><span class="bh-num">05</span><span class="bh-name">Stitching Color</span></div><span class="bh-val" id="cur-stitch">Gold</span></div>
+      <div class="block-body">
+        <div class="stitch-row">
+          <div class="st on" data-stitch="Gold" data-sc="#c9a84c" onclick="pickStitch(this)"><div class="st-dot" style="background:#c9a84c"></div>Gold</div>
+          <div class="st" data-stitch="Natural" data-sc="#d8c8a0" onclick="pickStitch(this)"><div class="st-dot" style="background:#d8c8a0"></div>Natural</div>
+          <div class="st" data-stitch="White" data-sc="#ebe7e0" onclick="pickStitch(this)"><div class="st-dot" style="background:#ebe7e0;border-color:rgba(255,255,255,.3)"></div>White</div>
+          <div class="st" data-stitch="Black" data-sc="#1c1c1c" onclick="pickStitch(this)"><div class="st-dot" style="background:#1c1c1c"></div>Black</div>
+          <div class="st" data-stitch="Red" data-sc="#8b1818" onclick="pickStitch(this)"><div class="st-dot" style="background:#8b1818"></div>Red</div>
+          <div class="st" data-stitch="Saddle" data-sc="#a0682a" onclick="pickStitch(this)"><div class="st-dot" style="background:#a0682a"></div>Saddle</div>
+        </div>
+      </div>
+    </div>
+    <!-- 06 Add-ons -->
+    <div class="block">
+      <div class="block-hdr"><div class="bh-left"><span class="bh-num">06</span><span class="bh-name">Add-ons</span></div><span class="bh-val" id="cur-addons">None</span></div>
+      <div class="block-body">
+        <div class="toggle-rows">
+          <div class="tog-row" data-addon="backzip" data-price="35" onclick="toggleAddon(this)"><div class="tog-info"><div class="tog-name">Back Zipper Compartment</div><div class="tog-desc">Hidden rear zip on each bag — cards, cash, documents</div></div><span class="tog-price">+$35</span><label class="switch" onclick="event.stopPropagation()"><input type="checkbox" class="addon-cb" data-addon="backzip" onchange="toggleAddon(this.closest('.tog-row'))"><span class="sw-track"></span></label></div>
+          <div class="tog-row" data-addon="monogram" data-price="25" onclick="toggleAddon(this)"><div class="tog-info"><div class="tog-name">Monogram / Initials</div><div class="tog-desc">Hand-embossed initials or short text on each bag</div></div><span class="tog-price">+$25</span><label class="switch" onclick="event.stopPropagation()"><input type="checkbox" class="addon-cb" data-addon="monogram" onchange="toggleAddon(this.closest('.tog-row'))"><span class="sw-track"></span></label></div>
+          <div class="tog-row" data-addon="extrarivet" data-price="20" onclick="toggleAddon(this)"><div class="tog-info"><div class="tog-name">Decorative Rivet Row</div><div class="tog-desc">Extra rivet detailing along both strap edges</div></div><span class="tog-price">+$20</span><label class="switch" onclick="event.stopPropagation()"><input type="checkbox" class="addon-cb" data-addon="extrarivet" onchange="toggleAddon(this.closest('.tog-row'))"><span class="sw-track"></span></label></div>
+          <div class="tog-row" data-addon="padlock" data-price="30" onclick="toggleAddon(this)"><div class="tog-info"><div class="tog-name">Padlock Loop Hardware</div><div class="tog-desc">Locking D-ring hardware on both main zipper pulls</div></div><span class="tog-price">+$30</span><label class="switch" onclick="event.stopPropagation()"><input type="checkbox" class="addon-cb" data-addon="padlock" onchange="toggleAddon(this.closest('.tog-row'))"><span class="sw-track"></span></label></div>
+          <div class="tog-row" data-addon="phonepocket" data-price="20" onclick="toggleAddon(this)"><div class="tog-info"><div class="tog-name">Phone Slip Pocket</div><div class="tog-desc">Open-top slot sized for iPhone/Android on each bag</div></div><span class="tog-price">+$20</span><label class="switch" onclick="event.stopPropagation()"><input type="checkbox" class="addon-cb" data-addon="phonepocket" onchange="toggleAddon(this.closest('.tog-row'))"><span class="sw-track"></span></label></div>
+          <div class="tog-row" data-addon="keyfob" data-price="15" onclick="toggleAddon(this)"><div class="tog-info"><div class="tog-name">Key Fob Clip</div><div class="tog-desc">Internal carabiner hook for keys inside left bag</div></div><span class="tog-price">+$15</span><label class="switch" onclick="event.stopPropagation()"><input type="checkbox" class="addon-cb" data-addon="keyfob" onchange="toggleAddon(this.closest('.tog-row'))"><span class="sw-track"></span></label></div>
+        </div>
+      </div>
+    </div>
+    <!-- 07 Rush -->
+    <div class="rush-wrap" id="rush-wrap">
+      <div class="rush-hdr" onclick="toggleRush()">
+        <div class="rush-badge">⚡ Rush</div>
+        <div class="rush-info"><div class="rush-name">Rush Order — 7 Business Days</div><div class="rush-sub">Standard 2–3 weeks. Rush moves you to front of queue.</div></div>
+        <span class="rush-plus">+$100</span>
+        <label class="switch" onclick="event.stopPropagation()"><input type="checkbox" id="rush-cb" onchange="toggleRush()"><span class="sw-track"></span></label>
+      </div>
+      <div class="rush-expand"><div class="rush-items"><div class="rush-item">Priority production queue</div><div class="rush-item">Expedited shipping included</div><div class="rush-item">Delivery guaranteed within 7 business days</div></div></div>
+    </div>
+    <!-- 08 Notes -->
+    <div class="block">
+      <div class="block-hdr"><div class="bh-left"><span class="bh-num">08</span><span class="bh-name">Special Instructions</span></div></div>
+      <div class="block-body"><textarea class="ta" id="notes" placeholder="Sizing, monogram text, special requests, firearm fit..."></textarea></div>
+    </div>
+    <!-- CTA -->
+    <div class="cta">
+      <div class="price-area">
+        <div class="price-left"><div class="price-lbl">Total Estimate</div><div class="price-big" id="price-big">$285</div></div>
+        <div class="price-right">
+          <div class="price-line" id="pl-base">Base: $285</div>
+          <div class="price-line" id="pl-addons">Add-ons: $0</div>
+          <div class="price-line rush-l" id="pl-rush">Rush: +$100</div>
+        </div>
+      </div>
+      <button class="btn-main" onclick="openModal()">— Place Custom Order —</button>
+      <button class="btn-ghost" onclick="saveConfig()" id="save-btn">Save My Configuration</button>
+      <div class="trust"><div class="trust-i">Handmade</div><div class="trust-i">Full-Grain Leather</div><div class="trust-i">Made to Order</div><div class="trust-i">Free Adjustments</div></div>
+    </div>
+  </div>
+</div>
+<p class="footer">Goldy Brown Custom Leather — goldiebrown.com</p>
+</div>
+
+<div class="overlay" id="modal-ov">
+  <div class="modal">
+    <div class="modal-title">Order Summary</div>
+    <div class="modal-sub">Double Shoulder Rig · Made to Order</div>
+    <div class="m-rush-notice" id="m-rush-notice">⚡ Rush order — delivery within 7 business days</div>
+    <div id="modal-rows"></div>
+    <div class="m-btns"><button class="m-yes" onclick="confirmOrder()">Confirm & Continue</button><button class="m-no" onclick="closeModal()">← Edit</button></div>
+  </div>
+</div>
+
+<script>
+const S={shape:'Classic',leather:'Black',lhex:'#1a1a1a',ldk:'#0d0d0d',hw:'Brass',hwc:'#b8960c',rivet:'Brass',rc:'#b8960c',rc2:'#c9a030',stitch:'Gold',sc:'#c9a84c',addons:new Set(),rush:false};
+const BP={Classic:285,Tapered:295,Boxy:310,Cargo:320,Slim:260,Oversized:340};
+const AP={backzip:35,monogram:25,extrarivet:20,padlock:30,phonepocket:20,keyfob:15};
+function adj(h,a){const n=parseInt(h.replace('#',''),16);const r=Math.min(255,Math.max(0,(n>>16)+a));const g=Math.min(255,Math.max(0,((n>>8)&255)+a));const b=Math.min(255,Math.max(0,(n&255)+a));return'#'+((r<<16)|(g<<8)|b).toString(16).padStart(6,'0')}
+function pop(){const w=document.getElementById('rig-wrap');w.classList.remove('pop');void w.offsetWidth;w.classList.add('pop')}
+function sa(id,a,v){const e=document.getElementById(id);if(e)e.setAttribute(a,v)}
+function calcTotal(){let t=BP[S.shape]||285;S.addons.forEach(k=>{t+=AP[k]||0});if(S.rush)t+=100;return t}
+function calcAO(){let t=0;S.addons.forEach(k=>{t+=AP[k]||0});return t}
+function updateSVG(){
+  const lc=S.lhex,ldk=S.ldk,hc=S.hwc,sc=S.sc,rc=S.rc;
+  const strap=adj(lc,-26),pkt=adj(lc,-18);
+  ['lb-body','rb-body'].forEach(id=>{sa(id,'fill',lc);sa(id,'stroke',ldk)});
+  ['lb-pkt','rb-pkt'].forEach(id=>{sa(id,'fill',pkt);sa(id,'stroke',adj(pkt,-10))});
+  ['sl1','sr1','strap-top','con-strap'].forEach(id=>sa(id,'fill',strap));
+  ['sl2','sr2'].forEach(id=>sa(id,'fill',adj(strap,10)));
+  ['buckle-l','buckle-lp','buckle-r','buckle-rp','clip-l','clip-lr','clip-r','clip-rr','el1r','el2r','er1r','er2r'].forEach(id=>sa(id,'stroke',hc));
+  ['lz-ring','rz-ring','lb-snap1','rb-snap1'].forEach(id=>sa(id,'fill',hc));
+  ['lz-body','rz-body'].forEach(id=>sa(id,'fill',adj(hc,-18)));
+  ['lb-snap2','rb-snap2'].forEach(id=>sa(id,'fill',adj(hc,22)));
+  ['lz-teeth','rz-teeth'].forEach(id=>sa(id,'stroke',adj(hc,12)));
+  ['lb-badge','rb-badge'].forEach(id=>sa(id,'stroke',hc));
+  ['lb-riv1','lb-riv2','lb-riv3','lb-riv4','rb-riv1','rb-riv2','rb-riv3','rb-riv4'].forEach(id=>sa(id,'fill',rc));
+  ['lb-o-stitch','rb-o-stitch','lb-pkt-stitch','rb-pkt-stitch','sl-stitch','sr-stitch'].forEach(id=>sa(id,'stroke',sc));
+  const bz=S.addons.has('backzip');
+  ['lb-bkzip','rb-bkzip'].forEach(id=>sa(id,'opacity',bz?'1':'0'));
+  if(bz){
+    ['lbz-teeth','rbz-teeth'].forEach(id=>sa(id,'stroke',adj(hc,12)));
+    ['lbz-ring','rbz-ring'].forEach(id=>sa(id,'fill',hc));
+    ['lbz-body','rbz-body'].forEach(id=>sa(id,'fill',adj(hc,-18)));
+  }
+  document.getElementById('sv-shape').textContent=S.shape;
+  document.getElementById('sv-leather').textContent=S.leather;
+  document.getElementById('sv-hw').textContent=S.hw;
+  document.getElementById('sv-rivet').textContent=S.rivet;
+  document.getElementById('sv-addons').textContent=S.addons.size;
+  const base=BP[S.shape]||285,ao=calcAO(),total=calcTotal();
+  document.getElementById('price-big').textContent='$'+total;
+  document.getElementById('pl-base').textContent='Base: $'+base;
+  document.getElementById('pl-addons').textContent='Add-ons: $'+ao;
+  document.getElementById('pl-rush').classList.toggle('show',S.rush);
+  pop();
+}
+function pickShape(el){document.querySelectorAll('.shape-card').forEach(c=>c.classList.remove('on'));el.classList.add('on');S.shape=el.dataset.shape;const names={Classic:'Classic Slab',Tapered:'Tapered',Boxy:'Boxy Dual',Cargo:'Cargo Stack',Slim:'Slim Profile',Oversized:'Oversized'};document.getElementById('cur-shape').textContent=names[S.shape];updateSVG()}
+function pickLeather(el){document.querySelectorAll('.sw').forEach(c=>c.classList.remove('on'));el.classList.add('on');S.leather=el.dataset.color;S.lhex=el.dataset.hex;S.ldk=el.dataset.dk;document.getElementById('cur-leather').textContent=S.leather;updateSVG()}
+function pickHW(el){document.querySelectorAll('.hw-card').forEach(c=>c.classList.remove('on'));el.classList.add('on');S.hw=el.dataset.hw;S.hwc=el.dataset.hwc;document.getElementById('cur-hw').textContent=S.hw;updateSVG()}
+function pickRivet(el){document.querySelectorAll('.rivet-pill').forEach(c=>c.classList.remove('on'));el.classList.add('on');S.rivet=el.dataset.rivet;S.rc=el.dataset.rc;S.rc2=el.dataset.rc2;document.getElementById('cur-rivet').textContent=S.rivet;updateSVG()}
+function pickStitch(el){document.querySelectorAll('.st').forEach(c=>c.classList.remove('on'));el.classList.add('on');S.stitch=el.dataset.stitch;S.sc=el.dataset.sc;document.getElementById('cur-stitch').textContent=S.stitch;updateSVG()}
+function toggleAddon(el){const key=el.dataset.addon;const cb=el.querySelector('input[type=checkbox]');S.addons.has(key)?S.addons.delete(key):S.addons.add(key);if(cb)cb.checked=S.addons.has(key);el.classList.toggle('on',S.addons.has(key));const nm=[...S.addons].map(k=>({backzip:'Back Zip',monogram:'Monogram',extrarivet:'Rivet Row',padlock:'Padlock',phonepocket:'Phone Pocket',keyfob:'Key Fob'}[k])).join(', ');document.getElementById('cur-addons').textContent=nm||'None';updateSVG()}
+function toggleRush(){const cb=document.getElementById('rush-cb');S.rush=cb.checked;document.getElementById('rush-wrap').classList.toggle('on',S.rush);updateSVG()}
+function openModal(){
+  const notes=document.getElementById('notes').value.trim();
+  const base=BP[S.shape]||285,ao=calcAO(),total=calcTotal();
+  const anames=[...S.addons].map(k=>({backzip:'Back Zipper',monogram:'Monogram',extrarivet:'Rivet Row',padlock:'Padlock Loop',phonepocket:'Phone Pocket',keyfob:'Key Fob'}[k])).join(', ')||'None';
+  const rows=[['Style','Double Shoulder Rig'],['Shape',S.shape],['Leather',S.leather],['Hardware',S.hw],['Rivets',S.rivet],['Stitching',S.stitch],['Add-ons',anames],['Lead Time',S.rush?'7 Business Days (Rush)':'2–3 Weeks Standard'],['Notes',notes||'—'],['Base','$'+base],...(ao>0?[['Add-ons','+$'+ao]]:[]),...(S.rush?[['Rush','+$100']]:[]),['Total','$'+total]];
+  document.getElementById('modal-rows').innerHTML=rows.map(([k,v])=>{const hl=k==='Total',ru=k==='Rush';return`<div class="m-row"><span class="m-k">${k}</span><span class="m-v ${hl?'hl':''} ${ru?'rush':''}">${v}</span></div>`}).join('');
+  document.getElementById('m-rush-notice').classList.toggle('show',S.rush);
+  document.getElementById('modal-ov').classList.add('open');
+}
+function closeModal(){document.getElementById('modal-ov').classList.remove('open')}
+function confirmOrder(){const notes=document.getElementById('notes').value.trim();const total=calcTotal();const p=new URLSearchParams({style:'Double Shoulder',shape:S.shape,leather:S.leather,hardware:S.hw,rivets:S.rivet,stitching:S.stitch,addons:[...S.addons].join(','),rush:S.rush?'Yes':'No',total,notes});alert('✓ Order confirmed!\n\nConnects to Shopify cart in production:\nhttps://goldiebrown.com/cart?'+p);closeModal()}
+function saveConfig(){try{localStorage.setItem('gb_cfg',JSON.stringify({...S,addons:[...S.addons],notes:document.getElementById('notes').value}))}catch(e){}const b=document.getElementById('save-btn');b.textContent='✓ Saved!';setTimeout(()=>b.textContent='Save My Configuration',2400)}
+document.getElementById('modal-ov').addEventListener('click',function(e){if(e.target===this)closeModal()});
+updateSVG();
+</script>
+</body>
+</html>
